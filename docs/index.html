@@ -359,76 +359,38 @@ display: none;
 
 <div id="how-can-we-upload-multiple-files-in-a-dry-way" class="section level1">
 <h1>How can we upload multiple files in a DRY way?</h1>
+<pre class="r"><code>library(tidyverse)
+library(here)</code></pre>
 <div id="option-1-downloading-files-to-a-folder-and-uploading-from-there." class="section level2">
 <h2>Option 1: downloading files to a folder, and uploading from
 there.</h2>
+<p>This is the option you’re familiar with from the Week 7 lab
+(assessment starter). The downloaded files have been put into the
+<code>consecutive_data</code> folder, with the <code>data</code>
+folder.</p>
+<pre class="r"><code>files &lt;- list.files(here(&quot;data&quot;, &quot;consecutive_data&quot;), pattern = &quot;csv&quot;)
+
+consecutive_data &lt;- files %&gt;% 
+  map_dfr(~read_csv(here(&quot;data&quot;, &quot;consecutive_data&quot;, .)))</code></pre>
+</div>
+<div id="option-2-downloading-from-the-website-and-uploading-as-r-objects" class="section level2">
+<h2>Option 2: Downloading from the website and uploading as R
+objects</h2>
 <p>I’ll use this script to show how we can load in multiple data files
 using their URLs, all listed within a single csv file.</p>
 <p>We’ll start by loading a csv file with URLs of the datasets, and
 turning it into a vector:</p>
-<pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-## ✔ dplyr     1.1.4     ✔ readr     2.1.5
-## ✔ forcats   1.0.0     ✔ stringr   1.5.2
-## ✔ ggplot2   4.0.0     ✔ tibble    3.3.0
-## ✔ lubridate 1.9.4     ✔ tidyr     1.3.1
-## ✔ purrr     1.1.0     
-## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-## ✖ dplyr::filter() masks stats::filter()
-## ✖ dplyr::lag()    masks stats::lag()
-## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
-<pre class="r"><code>library(here)</code></pre>
-<pre><code>## here() starts at /Users/kbanas2/Library/CloudStorage/OneDrive-UniversityofEdinburgh/UG Talent Lead/Y3_elective/data-science/B123456</code></pre>
 <pre class="r"><code>links &lt;- read_csv(here(&quot;file_links.csv&quot;)) %&gt;% 
   select(link) %&gt;% 
   pull()</code></pre>
-<pre><code>## Rows: 2 Columns: 1
-## ── Column specification ────────────────────────────────────────────────────────
-## Delimiter: &quot;,&quot;
-## chr (1): link
-## 
-## ℹ Use `spec()` to retrieve the full column specification for this data.
-## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <p>We’ll then use <code>map</code> to load all files from the list. This
 uses <code>map</code> and the <code>list_rbind</code>, as per <a href="https://r4ds.hadley.nz/iteration.html#purrrmap-and-list_rbind" class="uri">https://r4ds.hadley.nz/iteration.html#purrrmap-and-list_rbind</a></p>
 <pre class="r"><code>joined_data &lt;- links %&gt;% 
   map(read_csv) %&gt;% 
   list_rbind()</code></pre>
-<pre><code>## Rows: 1277042 Columns: 10
-## ── Column specification ────────────────────────────────────────────────────────
-## Delimiter: &quot;,&quot;
-## chr (4): HBT, BNFItemCode, BNFItemDescription, PrescribedType
-## dbl (6): GPPractice, DMDCode, NumberOfPaidItems, PaidQuantity, GrossIngredie...
-## 
-## ℹ Use `spec()` to retrieve the full column specification for this data.
-## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-## Rows: 1234901 Columns: 10
-## ── Column specification ────────────────────────────────────────────────────────
-## Delimiter: &quot;,&quot;
-## chr (4): HBT, BNFItemCode, BNFItemDescription, PrescribedType
-## dbl (6): GPPractice, DMDCode, NumberOfPaidItems, PaidQuantity, GrossIngredie...
-## 
-## ℹ Use `spec()` to retrieve the full column specification for this data.
-## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<p>Alternatively, we could use <code>map_df</code>, like this:</p>
+<p>Alternatively, we could use <code>map_dfr</code>, like this:</p>
 <pre class="r"><code>joined_data_with_just_map &lt;- links %&gt;% 
-  map_df(read_csv)</code></pre>
-<pre><code>## Rows: 1277042 Columns: 10
-## ── Column specification ────────────────────────────────────────────────────────
-## Delimiter: &quot;,&quot;
-## chr (4): HBT, BNFItemCode, BNFItemDescription, PrescribedType
-## dbl (6): GPPractice, DMDCode, NumberOfPaidItems, PaidQuantity, GrossIngredie...
-## 
-## ℹ Use `spec()` to retrieve the full column specification for this data.
-## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-## Rows: 1234901 Columns: 10
-## ── Column specification ────────────────────────────────────────────────────────
-## Delimiter: &quot;,&quot;
-## chr (4): HBT, BNFItemCode, BNFItemDescription, PrescribedType
-## dbl (6): GPPractice, DMDCode, NumberOfPaidItems, PaidQuantity, GrossIngredie...
-## 
-## ℹ Use `spec()` to retrieve the full column specification for this data.
-## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+  map_dfr(read_csv)</code></pre>
 </div>
 </div>
 

@@ -6,25 +6,54 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 ```
 
-## R Markdown
+# How can we upload multiple files in a DRY way?
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
+```{r libraries}
+library(tidyverse)
+library(here)
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
+## Option 1: downloading files to a folder, and uploading from there.
 
-```{r pressure}
-plot(pressure)
+This is the option you're familiar with from the Week 7 lab (assessment starter). The downloaded files have been put into the `consecutive_data` folder, with the `data` folder.
+
+```{r}
+files <- list.files(here("data", "consecutive_data"), pattern = "csv")
+
+consecutive_data <- files %>% 
+  map_dfr(~read_csv(here("data", "consecutive_data", .)))
 ```
 
-Note that by default you can see both the code and the output produced by that code.
+## Option 2: Downloading from the website and uploading as R objects
+
+I'll use this script to show how we can load in multiple data files using their URLs, all listed within a single csv file.
+
+We'll start by loading a csv file with URLs of the datasets, and turning it into a vector:
+
+```{r load file with links}
+
+links <- read_csv(here("file_links.csv")) %>% 
+  select(link) %>% 
+  pull()
+```
+
+We'll then use `map` to load all files from the list.
+This uses `map` and the `list_rbind`, as per https://r4ds.hadley.nz/iteration.html#purrrmap-and-list_rbind 
+
+```{r load datasets}
+joined_data <- links %>% 
+  map(read_csv) %>% 
+  list_rbind()
+```
+
+Alternatively, we could use `map_dfr`, like this:
+
+```{r alternative method}
+joined_data_with_just_map <- links %>% 
+  map_dfr(read_csv)
+```
+

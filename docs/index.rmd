@@ -19,7 +19,7 @@ library(here)
 
 ## Option 1: downloading files to a folder, and uploading from there.
 
-This is the option you're familiar with from the Week 7 lab (assessment starter). The downloaded files have been put into the `consecutive_data` folder, with the `data` folder.
+This is the option you're familiar with from the Week 7 lab (assessment starter). The downloaded files have been put into the `consecutive_data` folder, within the `data` folder.
 
 ```{r}
 files <- list.files(here("data", "consecutive_data"), pattern = "csv")
@@ -42,7 +42,7 @@ links <- read_csv(here("file_links.csv")) %>%
 ```
 
 We'll then use `map` to load all files from the list.
-This uses `map` and the `list_rbind`, as per https://r4ds.hadley.nz/iteration.html#purrrmap-and-list_rbind 
+This uses `map` and the `list_rbind` function, as per https://r4ds.hadley.nz/iteration.html#purrrmap-and-list_rbind (this is the current recommended way) 
 
 ```{r load datasets}
 joined_data <- links %>% 
@@ -50,7 +50,7 @@ joined_data <- links %>%
   list_rbind()
 ```
 
-Alternatively, we could use `map_dfr`, like this:
+Alternatively, we could use `map_dfr`, like this (but, `map_dfr` has been superseded, which means that it's no longer the most recommended option:
 
 ```{r alternative method}
 joined_data_with_just_map <- links %>% 

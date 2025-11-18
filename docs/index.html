@@ -366,7 +366,7 @@ library(here)</code></pre>
 there.</h2>
 <p>This is the option you’re familiar with from the Week 7 lab
 (assessment starter). The downloaded files have been put into the
-<code>consecutive_data</code> folder, with the <code>data</code>
+<code>consecutive_data</code> folder, within the <code>data</code>
 folder.</p>
 <pre class="r"><code>files &lt;- list.files(here(&quot;data&quot;, &quot;consecutive_data&quot;), pattern = &quot;csv&quot;)
 
@@ -384,11 +384,15 @@ turning it into a vector:</p>
   select(link) %&gt;% 
   pull()</code></pre>
 <p>We’ll then use <code>map</code> to load all files from the list. This
-uses <code>map</code> and the <code>list_rbind</code>, as per <a href="https://r4ds.hadley.nz/iteration.html#purrrmap-and-list_rbind" class="uri">https://r4ds.hadley.nz/iteration.html#purrrmap-and-list_rbind</a></p>
+uses <code>map</code> and the <code>list_rbind</code> function, as per
+<a href="https://r4ds.hadley.nz/iteration.html#purrrmap-and-list_rbind" class="uri">https://r4ds.hadley.nz/iteration.html#purrrmap-and-list_rbind</a>
+(this is the current recommended way)</p>
 <pre class="r"><code>joined_data &lt;- links %&gt;% 
   map(read_csv) %&gt;% 
   list_rbind()</code></pre>
-<p>Alternatively, we could use <code>map_dfr</code>, like this:</p>
+<p>Alternatively, we could use <code>map_dfr</code>, like this (but,
+<code>map_dfr</code> has been superseded, which means that it’s no
+longer the most recommended option:</p>
 <pre class="r"><code>joined_data_with_just_map &lt;- links %&gt;% 
   map_dfr(read_csv)</code></pre>
 </div>
